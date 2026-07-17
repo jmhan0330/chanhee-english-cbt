@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>찬희 영어 CBT</title>
+  <style>
+    :root{
+      --bg:#f5f7fb; --card:#fff; --text:#1f2937; --muted:#6b7280;
+      --primary:#4f46e5; --good:#16a34a; --bad:#dc2626; --line:#e5e7eb;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;background:var(--bg);color:var(--text)}
+    .wrap{max-width:960px;margin:0 auto;padding:20px}
+    header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+    h1{font-size:30px;margin:0} h2{margin-top:0}
+    .sub{color:var(--muted);margin-top:5px}
+    .badge{background:#eef2ff;color:#3730a3;padding:9px 14px;border-radius:999px;font-weight:800}
+    .card{background:var(--card);border-radius:22px;padding:24px;box-shadow:0 8px 26px rgba(15,23,42,.08);margin-bottom:16px}
+    .hidden{display:none}
+    .hero{text-align:center;padding:32px 20px}
+    .emoji{font-size:60px}
+    button{border:0;border-radius:14px;padding:13px 18px;font-size:16px;font-weight:800;cursor:pointer}
+    .primary{background:var(--primary);color:#fff}
+    .secondary{background:#eef2ff;color:#3730a3}
+    .ghost{background:#f3f4f6;color:#374151}
+    .danger{background:#fee2e2;color:#991b1b}
+    .round-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:22px 0}
+    .round-card{border:2px solid var(--line);border-radius:20px;padding:22px;text-align:left;background:#fff}
+    .round-card h3{font-size:22px;margin:0 0 8px}
+    .round-card p{color:var(--muted);line-height:1.6;min-height:52px}
+    .round-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .topline{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .progress{height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden}
+    .bar{height:100%;background:var(--primary);width:0}
+    .question-image{font-size:72px;text-align:center;margin:18px 0;white-space:pre-line}
+    .qtext{font-size:23px;font-weight:800;line-height:1.55;margin:15px 0;white-space:pre-line}
+    .speak{background:#ecfeff;color:#155e75;margin:4px 0 16px}
+    .choices{display:grid;gap:12px}
+    .choice{width:100%;text-align:left;background:#fff;border:2px solid var(--line);color:var(--text);padding:16px}
+    .choice.correct{border-color:var(--good);background:#f0fdf4;color:#166534}
+    .choice.wrong{border-color:var(--bad);background:#fef2f2;color:#991b1b}
+    .feedback{margin-top:16px;padding:14px;border-radius:14px;font-weight:800;line-height:1.55}
+    .feedback.good{background:#dcfce7;color:#166534}
+    .feedback.bad{background:#fee2e2;color:#991b1b}
+    .nav{display:flex;justify-content:flex-end;margin-top:16px}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+    .stat{background:#f8fafc;border:1px solid var(--line);border-radius:16px;padding:16px;text-align:center}
+    .stat strong{display:block;font-size:28px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:12px;border-bottom:1px solid var(--line);text-align:left}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+    @media(max-width:650px){
+      .wrap{padding:12px} h1{font-size:23px} .qtext{font-size:20px}
+      .round-grid,.stats{grid-template-columns:1fr} button{width:100%}
+      header{align-items:flex-start} .round-actions{display:grid}
+      table{font-size:13px} th,td{padding:9px 5px}
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>📚 찬희 영어 CBT</h1>
+      <div id="headerSub" class="sub">초등 3학년 영어 · 회차별 평가</div>
+    </div>
+    <div id="headerBadge" class="badge">2회차</div>
+  </header>
+
+  <section id="home" class="card hero">
+    <div class="emoji">🧠✨</div>
+    <h2>풀 회차를 골라 주세요</h2>
+    <p class="sub">풀고 난 점수와 어려웠던 문제를 알려주면 다음 회차에 반영해요.</p>
+    <div class="round-grid">
+      <div class="round-card">
+        <h3>1회차 · 종합 심화</h3>
+        <p>그림, 대화, 문장 배열, 짧은 독해를 포함한 기존 25문항입니다.</p>
+        <div class="round-actions">
+          <button class="primary" onclick="selectRound(1)">시험 시작</button>
+          <button class="secondary" onclick="startWrongOnly(1)">오답 복습</button>
+        </div>
+      </div>
+      <div class="round-card">
+        <h3>2회차 · 단어와 문장</h3>
+        <p>pail, tape, carrot, cherry, orange와 a/an을 문장 속에서 연습합니다.</p>
+        <div class="round-actions">
+          <button class="primary" onclick="selectRound(2)">시험 시작</button>
+          <button class="secondary" onclick="startWrongOnly(2)">오답 복습</button>
+        </div>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="ghost" onclick="showRecords()">📊 학습기록</button>
+    </div>
+  </section>
+
+  <section id="quiz" class="card hidden">
+    <div class="topline">
+      <strong id="roundTitle"></strong>
+      <strong id="counter"></strong>
+      <span id="scoreNow">정답 0</span>
+    </div>
+    <div class="progress"><div id="bar" class="bar"></div></div>
+    <div id="qImage" class="question-image"></div>
+    <div id="qText" class="qtext"></div>
+    <button id="speakBtn" class="speak hidden" onclick="speakQuestion()">🔊 발음 듣기</button>
+    <div id="choices" class="choices"></div>
+    <div id="feedback" class="feedback hidden"></div>
+    <div class="nav"><button id="nextBtn" class="primary hidden" onclick="nextQuestion()">다음 문제</button></div>
+  </section>
+
+  <section id="result" class="card hidden">
+    <div class="hero">
+      <div class="emoji">🏆</div>
+      <h2 id="resultTitle">평가 완료!</h2>
+      <div class="stats">
+        <div class="stat"><span>점수</span><strong id="finalScore">0점</strong></div>
+        <div class="stat"><span>정답</span><strong id="finalCorrect">0개</strong></div>
+        <div class="stat"><span>오답</span><strong id="finalWrong">0개</strong></div>
+      </div>
+      <p id="resultMessage"></p>
+      <div class="tabs">
+        <button class="primary" onclick="startQuiz(false)">다시 풀기</button>
+        <button class="secondary" onclick="startWrongOnly(currentRound)">오답만 풀기</button>
+        <button class="ghost" onclick="goHome()">회차 선택</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="records" class="card hidden">
+    <div class="topline">
+      <h2 style="margin:0">📊 학습기록</h2>
+      <button class="ghost" onclick="goHome()">돌아가기</button>
+    </div>
+    <div id="recordSummary"></div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>날짜</th><th>회차</th><th>점수</th><th>정답</th><th>문항 수</th></tr></thead>
+        <tbody id="recordRows"></tbody>
+      </table>
+    </div>
+    <div style="margin-top:16px"><button class="danger" onclick="clearRecords()">기록 초기화</button></div>
+  </section>
+</div>
+
+<script>
+const round1Questions = [
+  {img:"🍎🍎🍎", text:"How many apples are there?", speak:"How many apples are there?", choices:["There are two apples.","There are three apples.","There are four apples."], answer:1, explain:"사과가 3개이므로 There are three apples.가 정답입니다."},
+  {img:"👦📖", text:"그림과 알맞은 문장을 고르세요.", speak:"The boy is reading a book.", choices:["The boy is eating.","The boy is reading a book.","The boy is sleeping."], answer:1, explain:"남자아이가 책을 읽고 있습니다."},
+  {img:"👧🥛", text:"She is ______ milk.", speak:"She is drinking milk.", choices:["drinking","reading","opening"], answer:0, explain:"우유를 마시고 있으므로 drinking입니다."},
+  {text:"다음 단어를 바르게 배열한 문장을 고르세요.\nmy / is / This / pencil", speak:"This is my pencil.", choices:["This my is pencil.","This is my pencil.","My pencil this is."], answer:1, explain:"영어 문장 순서는 This + is + my pencil입니다."},
+  {text:"A: How old are you?\nB: ____________________", speak:"How old are you? I am nine years old.", choices:["I'm fine.","I'm nine years old.","My name is Mina."], answer:1, explain:"나이를 묻는 질문이므로 I'm nine years old.가 알맞습니다."},
+  {text:"A: What's your name?\nB: ____________________", speak:"What's your name? My name is Tom.", choices:["My name is Tom.","I'm ten years old.","I like soccer."], answer:0, explain:"이름을 묻는 질문에는 My name is~로 답합니다."},
+  {img:"🐶🟤", text:"The dog is ______.", speak:"The dog is brown.", choices:["brown","blue","yellow"], answer:0, explain:"그림 속 강아지는 갈색입니다."},
+  {text:"다음 중 문법적으로 바른 문장을 고르세요.", speak:"I have a cat.", choices:["I has a cat.","I have a cat.","I am have a cat."], answer:1, explain:"주어가 I일 때는 have를 사용합니다."},
+  {text:"다음 중 뜻이 다른 하나를 고르세요.", choices:["Good morning.","Hello.","Good night."], answer:2, explain:"Good night.은 잠자기 전 인사이고, 나머지는 만날 때 쓰는 인사입니다."},
+  {img:"🏫", text:"학교에서 볼 수 없는 것을 고르세요.", choices:["teacher","classroom","banana"], answer:2, explain:"banana는 음식이므로 학교 관련 단어가 아닙니다."},
+  {text:"Open your book.의 반대말로 알맞은 것은?", speak:"Close your book.", choices:["Close your book.","Read your book.","Take your book."], answer:0, explain:"open의 반대말은 close입니다."},
+  {text:"빈칸에 알맞은 말을 고르세요.\n______ is my sister.", speak:"She is my sister.", choices:["He","She","It"], answer:1, explain:"sister는 여자이므로 She를 사용합니다."},
+  {text:"빈칸에 알맞은 말을 고르세요.\nI like ______.", choices:["apple","apples","an apples"], answer:1, explain:"좋아하는 대상을 일반적으로 말할 때 복수형 apples를 씁니다."},
+  {text:"다음 중 질문과 대답이 알맞게 연결된 것은?", choices:["How are you? — I'm fine.","How old are you? — My name is Jina.","What's this? — I'm ten."], answer:0, explain:"How are you?에는 I'm fine.이 알맞습니다."},
+  {img:"👨‍👩‍👧‍👦", text:"This is my ______.", speak:"This is my family.", choices:["family","school","friend"], answer:0, explain:"그림은 가족이므로 family입니다."},
+  {text:"Tom has a dog. The dog is small and white.\nWhat color is the dog?", speak:"Tom has a dog. The dog is small and white.", choices:["It is brown.","It is white.","It is black."], answer:1, explain:"지문에 The dog is small and white.라고 나옵니다."},
+  {text:"Mina likes apples, but she doesn't like bananas.\nWhat does Mina like?", speak:"Mina likes apples, but she doesn't like bananas.", choices:["She likes apples.","She likes bananas.","She likes oranges."], answer:0, explain:"Mina가 좋아하는 것은 apples입니다."},
+  {text:"다음 중 대문자와 문장 부호가 바른 것은?", choices:["my name is Tom","My name is Tom.","My name is tom."], answer:1, explain:"문장은 대문자로 시작하고 마침표로 끝내며, 이름 Tom도 대문자로 씁니다."},
+  {text:"A: Thank you.\nB: ____________________", speak:"Thank you. You're welcome.", choices:["You're welcome.","I'm sorry.","Good night."], answer:0, explain:"감사 인사에는 You're welcome.으로 답합니다."},
+  {img:"🎨🔴🔵🟡", text:"다음 중 색깔이 아닌 단어는?", choices:["red","blue","ruler"], answer:2, explain:"ruler는 자이고, red와 blue는 색깔입니다."},
+  {text:"다음 중 알맞은 문장을 고르세요.", choices:["These is my books.","These are my books.","This are my books."], answer:1, explain:"복수형 these에는 are를 사용합니다."},
+  {text:"빈칸에 알맞은 전치사를 고르세요.\nThe book is ______ the desk.", img:"📘\n🪑", choices:["on","under","in"], answer:0, explain:"책이 책상 위에 있으므로 on입니다."},
+  {text:"다음 문장의 뜻으로 알맞은 것은?\nLet's play soccer after school.", speak:"Let's play soccer after school.", choices:["학교 전에 축구하자.","학교가 끝난 뒤 축구하자.","학교에서 공부하자."], answer:1, explain:"after school은 학교가 끝난 뒤라는 뜻입니다."},
+  {text:"다음 중 알맞지 않은 문장을 고르세요.", choices:["He is my brother.","She is my mother.","It is my teacher."], answer:2, explain:"사람인 선생님에게 일반적으로 It을 쓰지 않습니다."},
+  {text:"Jina has two pencils and one eraser.\nHow many things does Jina have?", speak:"Jina has two pencils and one eraser.", choices:["Two.","Three.","Four."], answer:1, explain:"연필 2개와 지우개 1개이므로 모두 3개입니다."}
+];
+
+const round2Questions = [
+  {img:"🍊", text:"빈칸에 알맞은 말을 고르세요.\nThis is ___ orange.", speak:"This is an orange.", choices:["a","an","the"], answer:1, explain:"orange는 모음 소리로 시작하므로 an orange라고 합니다."},
+  {img:"🪣", text:"그림과 알맞은 문장을 고르세요.", speak:"I have a pail.", choices:["I have a pail.","I have an pail.","I have a tape."], answer:0, explain:"pail 앞에는 a를 쓰며, 문장은 I have a pail.입니다."},
+  {img:"🥕", text:"빈칸에 알맞은 단어를 고르세요.\nShe has a ___.", speak:"She has a carrot.", choices:["cherry","carrot","pail"], answer:1, explain:"그림은 당근이므로 carrot입니다."},
+  {img:"🍒", text:"다음 문장의 뜻으로 알맞은 것은?\nI see a cherry.", speak:"I see a cherry.", choices:["나는 체리를 봅니다.","나는 당근을 먹습니다.","나는 양동이를 가지고 있습니다."], answer:0, explain:"see는 '보다', cherry는 '체리'입니다."},
+  {img:"🧻", text:"붙이는 물건을 나타내는 단어를 고르세요.", speak:"tape", choices:["pail","tape","orange"], answer:1, explain:"tape는 붙일 때 사용하는 테이프입니다."},
+  {text:"다음 중 알맞은 문장을 고르세요.", speak:"This is a carrot.", choices:["This is an carrot.","This is a carrot.","This are a carrot."], answer:1, explain:"carrot은 자음 소리로 시작하므로 a carrot입니다."},
+  {text:"다음 중 알맞은 문장을 고르세요.", speak:"This is an orange.", choices:["This is a orange.","This is an orange.","This an is orange."], answer:1, explain:"orange 앞에는 an을 씁니다."},
+  {text:"단어를 바르게 배열한 문장을 고르세요.\nhave / I / tape / a", speak:"I have a tape.", choices:["I a tape have.","I have a tape.","Have I tape a."], answer:1, explain:"영어 어순은 I + have + a tape입니다."},
+  {text:"A: What is this?\nB: ____________________", speak:"It is a pail.", choices:["It is a pail.","I am a pail.","It are a pail."], answer:0, explain:"물건을 묻는 질문에는 It is~로 답할 수 있습니다."},
+  {img:"🍊", text:"다음 중 그림에 맞지 않는 문장을 고르세요.", choices:["It is an orange.","This is an orange.","It is a cherry."], answer:2, explain:"그림은 orange이므로 cherry라고 한 문장이 맞지 않습니다."},
+  {text:"다음 중 과일만 있는 것을 고르세요.", choices:["carrot, pail","cherry, orange","tape, carrot"], answer:1, explain:"cherry와 orange는 모두 과일입니다."},
+  {text:"다음 중 채소가 들어 있는 문장을 고르세요.", speak:"I have a carrot.", choices:["I have a carrot.","I see a cherry.","This is an orange."], answer:0, explain:"carrot은 채소입니다."},
+  {text:"빈칸에 알맞은 말을 고르세요.\nPlease give me the ___.", speak:"Please give me the tape.", choices:["tape","orange","cherry"], answer:0, explain:"붙이는 물건을 달라고 할 때 tape가 알맞습니다."},
+  {text:"다음 문장의 뜻으로 알맞은 것은?\nShe has an orange.", speak:"She has an orange.", choices:["그녀는 오렌지를 가지고 있습니다.","그녀는 당근을 먹습니다.","그녀는 테이프를 봅니다."], answer:0, explain:"has는 '가지고 있다'라는 뜻입니다."},
+  {text:"다음 중 a가 들어갈 단어를 모두 고른 것은?", choices:["pail, carrot","orange, apple","egg, orange"], answer:0, explain:"pail과 carrot은 자음 소리로 시작하므로 a를 씁니다."},
+  {text:"다음 중 an이 들어갈 단어를 모두 고른 것은?", choices:["tape, pail","carrot, cherry","orange, apple"], answer:2, explain:"orange와 apple은 모음 소리로 시작하므로 an을 씁니다."},
+  {text:"빈칸에 알맞은 말을 고르세요.\nI have a pail and ___ orange.", speak:"I have a pail and an orange.", choices:["a","an","two"], answer:1, explain:"orange 앞에는 an을 씁니다."},
+  {text:"다음 중 문법적으로 틀린 문장을 고르세요.", choices:["I have a carrot.","This is an orange.","She has an pail."], answer:2, explain:"pail 앞에는 an이 아니라 a를 써야 합니다."},
+  {text:"문장을 읽고 물음에 답하세요.\nMina has a pail and a carrot.\nWhat does Mina have?", speak:"Mina has a pail and a carrot. What does Mina have?", choices:["A pail and a carrot.","A tape and an orange.","A cherry and an apple."], answer:0, explain:"지문에 a pail and a carrot이라고 나옵니다."},
+  {text:"문장을 읽고 물음에 답하세요.\nTom sees a cherry and an orange.\nWhat fruits does Tom see?", speak:"Tom sees a cherry and an orange. What fruits does Tom see?", choices:["A carrot and a pail.","A cherry and an orange.","A tape and an apple."], answer:1, explain:"Tom이 보는 과일은 cherry와 orange입니다."},
+  {text:"다음 중 대문자와 문장 부호가 바른 것을 고르세요.", choices:["this is an orange.","This is an orange.","This is an orange"], answer:1, explain:"문장은 대문자로 시작하고 마침표로 끝납니다."},
+  {text:"다음 중 뜻이 다른 하나를 고르세요.", choices:["cherry","orange","carrot"], answer:2, explain:"cherry와 orange는 과일이고 carrot은 채소입니다."},
+  {text:"A: Do you have a tape?\nB: Yes, ____________________", speak:"Yes, I do.", choices:["I do.","I am.","it is."], answer:0, explain:"Do you~? 질문의 긍정 대답은 Yes, I do.입니다."},
+  {text:"빈칸에 알맞은 말을 고르세요.\nThis is ___ cherry. It is red.", speak:"This is a cherry. It is red.", choices:["a","an","are"], answer:0, explain:"cherry는 자음 소리로 시작하므로 a cherry입니다."},
+  {text:"다음 중 가장 알맞은 문장을 고르세요.", choices:["I have an orange and a carrot.","I have a orange and an carrot.","I has an orange and a carrot."], answer:0, explain:"orange 앞에는 an, carrot 앞에는 a를 쓰며, I와 함께 have를 사용합니다."}
+];
+
+const rounds = {1:round1Questions, 2:round2Questions};
+let currentRound = 1;
+let questions = round1Questions;
+let activeQuestions = [];
+let current = 0, correct = 0, answered = false, wrongIds = [];
+let lastSpeech = "";
+
+function show(id){
+  ["home","quiz","result","records"].forEach(x=>document.getElementById(x).classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+}
+function wrongKey(round){ return "chanheeWrong_round_"+round; }
+function selectRound(round){
+  currentRound=round; questions=rounds[round];
+  startQuiz(false);
+}
+function startQuiz(wrongOnly){
+  questions=rounds[currentRound];
+  const savedWrong=JSON.parse(localStorage.getItem(wrongKey(currentRound))||"[]");
+  activeQuestions = wrongOnly
+    ? questions.map((q,i)=>({...q,originalId:i})).filter(q=>savedWrong.includes(q.originalId))
+    : questions.map((q,i)=>({...q,originalId:i}));
+  if(wrongOnly && activeQuestions.length===0){ alert("이 회차에 저장된 오답이 없습니다."); return; }
+  current=0; correct=0; answered=false; wrongIds=[];
+  document.getElementById("roundTitle").textContent=currentRound+"회차";
+  show("quiz"); renderQuestion();
+}
+function startWrongOnly(round){ currentRound=round; questions=rounds[round]; startQuiz(true); }
+function renderQuestion(){
+  answered=false;
+  const q=activeQuestions[current];
+  document.getElementById("counter").textContent=`${current+1} / ${activeQuestions.length}`;
+  document.getElementById("scoreNow").textContent=`정답 ${correct}`;
+  document.getElementById("bar").style.width=`${(current/activeQuestions.length)*100}%`;
+  document.getElementById("qImage").textContent=q.img||"";
+  document.getElementById("qText").textContent=q.text;
+  lastSpeech=q.speak||"";
+  document.getElementById("speakBtn").classList.toggle("hidden",!lastSpeech);
+  const choices=document.getElementById("choices"); choices.innerHTML="";
+  q.choices.forEach((c,i)=>{
+    const b=document.createElement("button");
+    b.className="choice"; b.textContent=`${i+1}. ${c}`;
+    b.onclick=()=>selectAnswer(i,b); choices.appendChild(b);
+  });
+  document.getElementById("feedback").className="feedback hidden";
+  document.getElementById("nextBtn").classList.add("hidden");
+}
+function selectAnswer(idx,btn){
+  if(answered) return; answered=true;
+  const q=activeQuestions[current];
+  const buttons=[...document.querySelectorAll(".choice")];
+  buttons[q.answer].classList.add("correct");
+  const fb=document.getElementById("feedback");
+  if(idx===q.answer){
+    correct++; fb.className="feedback good"; fb.textContent="✅ 정답입니다! "+q.explain;
+  } else {
+    btn.classList.add("wrong"); fb.className="feedback bad"; fb.textContent="❌ 아쉬워요. "+q.explain;
+    wrongIds.push(q.originalId);
+  }
+  document.getElementById("scoreNow").textContent=`정답 ${correct}`;
+  document.getElementById("nextBtn").classList.remove("hidden");
+}
+function nextQuestion(){ current++; current<activeQuestions.length ? renderQuestion() : finishQuiz(); }
+function finishQuiz(){
+  const total=activeQuestions.length, score=Math.round(correct/total*100);
+  document.getElementById("resultTitle").textContent=currentRound+"회차 완료!";
+  document.getElementById("finalScore").textContent=score+"점";
+  document.getElementById("finalCorrect").textContent=correct+"개";
+  document.getElementById("finalWrong").textContent=(total-correct)+"개";
+  document.getElementById("resultMessage").textContent=
+    score>=90?"아주 잘했어요! 문장 속 단어도 정확하게 이해하고 있어요.":
+    score>=70?"잘했어요! 틀린 문장을 한 번 더 읽어보면 더 좋아요.":
+    "괜찮아요. 오답을 다시 풀면서 단어와 문장을 천천히 익혀봅시다.";
+  const oldWrong=JSON.parse(localStorage.getItem(wrongKey(currentRound))||"[]");
+  localStorage.setItem(wrongKey(currentRound),JSON.stringify([...new Set([...oldWrong,...wrongIds])]));
+  const records=JSON.parse(localStorage.getItem("chanheeRecords")||"[]");
+  records.unshift({date:new Date().toLocaleString("ko-KR"),round:currentRound,score,correct,total});
+  localStorage.setItem("chanheeRecords",JSON.stringify(records.slice(0,100)));
+  show("result");
+}
+function speakQuestion(){
+  if(!lastSpeech) return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(lastSpeech); u.lang="en-US"; u.rate=.82;
+  speechSynthesis.speak(u);
+}
+function showRecords(){
+  const records=JSON.parse(localStorage.getItem("chanheeRecords")||"[]");
+  const rows=document.getElementById("recordRows"); rows.innerHTML="";
+  records.forEach(r=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td>${r.date}</td><td>${r.round ? r.round+"회차" : "기존 기록"}</td><td>${r.score}점</td><td>${r.correct}개</td><td>${r.total}개</td>`;
+    rows.appendChild(tr);
+  });
+  const avg=records.length?Math.round(records.reduce((a,b)=>a+b.score,0)/records.length):0;
+  const wrongTotal=[1,2].reduce((sum,r)=>sum+JSON.parse(localStorage.getItem(wrongKey(r))||"[]").length,0);
+  document.getElementById("recordSummary").innerHTML=
+    `<div class="stats"><div class="stat"><span>응시 횟수</span><strong>${records.length}회</strong></div>
+    <div class="stat"><span>평균 점수</span><strong>${avg}점</strong></div>
+    <div class="stat"><span>저장된 오답</span><strong>${wrongTotal}개</strong></div></div>`;
+  show("records");
+}
+function clearRecords(){
+  if(confirm("학습기록과 모든 회차의 오답을 지울까요?")){
+    localStorage.removeItem("chanheeRecords");
+    localStorage.removeItem(wrongKey(1)); localStorage.removeItem(wrongKey(2));
+    localStorage.removeItem("chanheeWrong");
+    showRecords();
+  }
+}
+function goHome(){ show("home"); }
+</script>
+</body>
+</html>
